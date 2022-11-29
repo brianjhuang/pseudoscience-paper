@@ -26,13 +26,13 @@ docutils==0.16
 entrypoints==0.3
 flatbuffers==22.11.23
 gast==0.4.0
-google-api-core==1.26.0
-google-api-python-client==1.12.8
+google-api-core==2.10.2
+google-api-python-client==2.66.0
 google-auth==1.27.0
-google-auth-httplib2==0.0.4
+google-auth-httplib2==0.1.0
 google-auth-oauthlib==0.4.6
 google-pasta==0.2.0
-googleapis-common-protos==1.53.0
+googleapis-common-protos==1.57.0
 grpcio==1.29.0
 h5py==3.2.0
 httplib2==0.19.0
@@ -76,7 +76,7 @@ pexpect==4.8.0
 pickleshare==0.7.5
 prometheus-client==0.15.0
 prompt-toolkit==2.0.10
-protobuf==3.15.3
+protobuf==3.19.5
 ptyprocess==0.6.0
 pyahocorasick==1.4.1
 pyasn1==0.4.8
@@ -127,4 +127,5 @@ webencodings==0.5.1
 Werkzeug==1.0.1
 widgetsnbextension==3.5.1
 wrapt==1.14.1
+youtube-dl==2021.12.17
 zipp==3.11.0
