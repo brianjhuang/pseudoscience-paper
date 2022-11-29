@@ -6,7 +6,7 @@ import numpy as np
 import os
 import pickle
 from keras.preprocessing.text import Tokenizer
-from keras.preprocessing.sequence import pad_sequences
+from keras_preprocessing.sequence import pad_sequences
 from tqdm import tqdm
 from joblib import Parallel, delayed
 
