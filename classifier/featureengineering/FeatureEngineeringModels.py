@@ -41,7 +41,7 @@ class FeatureEngineeringModels(object):
             input_features = self.DATASET.get_video_transcript_features()
         elif model_type == 'video_comments':
             input_features = self.DATASET.get_video_comments_features()
-
+            
         # Convert into features to fastText input data
         fasttext_input_filename = '{0}/{1}_train_data.txt'.format(self.DATA_DIR, model_type)
         if not overwrite and os.path.isfile(fasttext_input_filename):
@@ -66,7 +66,7 @@ class FeatureEngineeringModels(object):
         if not os.path.isfile(fasttext_model_filename) or overwrite:
             # Train unspervised fastText model
             model = fasttext.train_unsupervised(input='{0}/{1}_train_data.txt'.format(self.DATA_DIR, model_type),
-                                                pretrainedVectors='wiki-news-300d-1M.vec',
+                                                pretrainedVectors='{0}/wiki-news-300d-1M.vec'.format(self.FEATURE_ENGINEERING_MODELS_DIR),
                                                 dim=300,
                                                 minn=2,
                                                 maxn=5,

@@ -57,7 +57,8 @@ class ClassifierTraining(object):
         self.DEEP_LEARNING_MODEL_OBJ = PseudoscienceDeepLearningModel()
 
         # Get Dataset Videos and their Labels
-        self.dataset_videos, self.videos_classification_details = self.DATASET.get_groundtruth_videos()
+        self.dataset_videos, self.videos_classification_details = self.DATASET.get_groundtruth_videos(), self.DATASET.get_groundtruth_labels()
+        # self.dataset_videos = self.DATASET.get_groundtruth_videos()
         self.dataset_labels = self.DATASET.get_groundtruth_labels()
         self.dataset_labels_categorical = self.DATASET.get_groundtruth_labels_one_hot_encoded(perform_one_hot=False) # [0]
         self.dataset_labels_one_hot = self.DATASET.get_groundtruth_labels_one_hot_encoded(perform_one_hot=True)  # [0., 0., 1., 0.]

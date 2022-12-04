@@ -102,7 +102,7 @@ class DatasetUtils(object):
         Method that returns the labels of our Ground Truth Videos
         :return:
         """
-        groundtruth_videos = self.groundtruth_videos_col.find({}, {'id': 1, 'classification': 1})
+        groundtruth_videos = self.groundtruth_videos_col.find({}, {'id': 1, 'annotation': 1})
 
         video_labels = list()
         science_videos = 0
@@ -110,18 +110,22 @@ class DatasetUtils(object):
         irrelevant_videos = 0
         for video in groundtruth_videos:
             # Find the correct label
-            if video['classification']['classification_category'] == 'science':
+            if video['annotation']['label'] == 'science':
                 science_videos += 1
-            elif video['classification']['classification_category'] == 'pseudoscience':
+            elif video['annotation']['label'] == 'pseudoscience':
                 pseudoscience_videos += 1
-            elif video['classification']['classification_category'] == 'irrelevant':
+            elif video['annotation']['label'] == 'irrelevant':
+                irrelevant_videos += 1
+            elif video['annotation']['label'] == 'unknown':
+                irrelevant_videos += 1
+            elif video['annotation']['label'] == 'not_available':
                 irrelevant_videos += 1
 
             # Add Video details
-            if video['classification']['classification_category'] == 'irrelevant':
+            if video['annotation']['label'] == 'irrelevant':
                 video_labels.append('science')
             else:
-                video_labels.append(video['classification']['classification_category'])
+                video_labels.append(video['annotation']['label'])
         print('\n\n--- [GROUND TRUTH VIDEOS] SCIENCE: {} | PSEUDOSCIENCE: {}'.format(science_videos+irrelevant_videos, pseudoscience_videos))
         return video_labels
 
@@ -131,12 +135,16 @@ class DatasetUtils(object):
         :param perform_one_hot:
         :return:
         """
-        groundtruth_videos = self.groundtruth_videos_col.find({}, {'id': 1, 'classification': 1})
-        ground_truth_labels = [video['classification']['classification_category'] for video in groundtruth_videos]
+        groundtruth_videos = self.groundtruth_videos_col.find({}, {'id': 1, 'annotation': 1})
+        ground_truth_labels = [video['annotation']['label'] for video in groundtruth_videos]
 
         final_groundtruth_labels = list()
         for label in ground_truth_labels:
             if label == 'irrelevant':
+                label = 'science'
+            if label == 'not_available':
+                label = 'science'
+            if label == 'unknown':
                 label = 'science'
             final_groundtruth_labels.append(label)
 
@@ -452,22 +460,37 @@ class DatasetUtils(object):
         preprocessed_video_comments = list()
         for comment in video_comments:
             preprocessed_video_comments.append(self.preprocess_text(text=comment))
-        return preprocessed_video_comments
+        return ' '.join(preprocessed_video_comments).replace('\n', '')
 
     def get_video_comments_features(self):
         """
         Method that gets the Video Comments 'features' for all all_videos in our Ground Truth
         :return:
+
+        NOTE: Brian Huang removed reading video_ids and replaced it with a call to the Mongo DB database
+        Data follows the schema:
+        comments, ids
+        with comments being a list of all top 200 comments (as strings) seperated by commas ['comment', 'comment2', ...]
+        with ids being the video_id
         """
         all_video_comments_features = list()
-        if not os.path.isfile(self.VIDEO_COMMENTS_FEATURES_FILENAME):
-            progress = tqdm(total=len(self.GROUNDTRUTH_VIDEOS))
-            for video_id in self.GROUNDTRUTH_VIDEOS:
-                # Read Video Comments
-                video_comments = self.read_video_comments(video_id=video_id)
 
-                # Video Comments
-                all_video_comments_features.append(self.preprocess_video_comments(video_comments=video_comments))
+        # Get all list of comments for all videos we have from mongodb
+        comments = self.groundtruth_videos_comments_col.find({}, {'comments' : 1, 'id': 1})
+        comments = {comment['id']:comment['comments'] for comment in comments}
+
+        # Don't run the model if we have the comments weights already
+        if not os.path.isfile(self.VIDEO_COMMENTS_FEATURES_FILENAME):
+            # Progress bar
+            progress = tqdm(total=len(comments))
+
+            # Get all sets of comments
+            for video_id in self.GROUNDTRUTH_VIDEOS:
+                if video_id in comments:
+                    #Pre Process our Comments
+                    all_video_comments_features.append(self.preprocess_video_comments(video_comments=comments[video_id]))
+                else:
+                    all_video_comments_features.append("")
 
                 progress.update(1)
             progress.close()
@@ -475,9 +498,8 @@ class DatasetUtils(object):
             # Save them to file
             pickle.dump(all_video_comments_features, open(self.VIDEO_COMMENTS_FEATURES_FILENAME, mode='wb'))
         else:
-            # Read saved features from file
+             # Read saved features from file
             all_video_comments_features = pickle.load(open(self.VIDEO_COMMENTS_FEATURES_FILENAME, mode='rb'))
-
         return all_video_comments_features
 
     @staticmethod

@@ -2,4 +2,5 @@
 *
 # Except this file
 !.gitignore
-!feature_engineering_models_data/
+!/feature_engineering_models_data
+!/input_features

@@ -36,18 +36,18 @@ class PseudoscienceClassifier(object):
         # Set the base directory of the FastText Classifiers
         self.FASTTEXT_MODELS_DIR = 'pseudoscientificvideosdetection/models/feature_extraction'
         # Load FastText Classifiers
-        if not os.path.isfile('{0}/model_unsupervised_video_snippet.bin'.format(self.FASTTEXT_MODELS_DIR)):
+        if not os.path.isfile('{0}/fasttext_model_video_snippet.bin'.format(self.FASTTEXT_MODELS_DIR)):
             exit('Cannot find fasttext feature extractor for VIDEO SNIPPET')
-        self.FASTTEXT_VIDEO_SNIPPET = fasttext.load_model(path='{0}/model_unsupervised_video_snippet.bin'.format(self.FASTTEXT_MODELS_DIR))
-        if not os.path.isfile('{0}/model_unsupervised_video_tags.bin'.format(self.FASTTEXT_MODELS_DIR)):
+        self.FASTTEXT_VIDEO_SNIPPET = fasttext.load_model(path='{0}/fasttext_model_video_snippet.bin'.format(self.FASTTEXT_MODELS_DIR))
+        if not os.path.isfile('{0}/fasttext_model_video_tags.bin'.format(self.FASTTEXT_MODELS_DIR)):
             exit('Cannot find fasttext feature extractor for VIDEO TAGS')
-        self.FASTTEXT_VIDEO_TAGS = fasttext.load_model(path='{0}/model_unsupervised_video_tags.bin'.format(self.FASTTEXT_MODELS_DIR))
-        if not os.path.isfile('{0}/model_unsupervised_video_transcript.bin'.format(self.FASTTEXT_MODELS_DIR)):
+        self.FASTTEXT_VIDEO_TAGS = fasttext.load_model(path='{0}/fasttext_model_video_tags.bin'.format(self.FASTTEXT_MODELS_DIR))
+        if not os.path.isfile('{0}/fasttext_model_video_transcript.bin'.format(self.FASTTEXT_MODELS_DIR)):
             exit('Cannot find fasttext feature extractor for VIDEO TRANSCRIPT')
-        self.FASTTEXT_VIDEO_TRANSCRIPT = fasttext.load_model(path='{0}/model_unsupervised_video_transcript.bin'.format(self.FASTTEXT_MODELS_DIR))
-        if not os.path.isfile('{0}/model_unsupervised_video_comments.bin'.format(self.FASTTEXT_MODELS_DIR)):
+        self.FASTTEXT_VIDEO_TRANSCRIPT = fasttext.load_model(path='{0}/fasttext_model_video_transcript.bin'.format(self.FASTTEXT_MODELS_DIR))
+        if not os.path.isfile('{0}/fasttext_model_video_comments.bin'.format(self.FASTTEXT_MODELS_DIR)):
             exit('Cannot find fasttext feature extractor for VIDEO COMMENTS')
-        self.FASTTEXT_VIDEO_COMMENTS = fasttext.load_model(path='{0}/model_unsupervised_video_comments.bin'.format(self.FASTTEXT_MODELS_DIR))
+        self.FASTTEXT_VIDEO_COMMENTS = fasttext.load_model(path='{0}/fasttext_model_video_comments.bin'.format(self.FASTTEXT_MODELS_DIR))
 
         # Load the Pseudoscience Classifier
         self.pseudoscience_model_filename = 'pseudoscientificvideosdetection/models/pseudoscience_model_final.hdf5'
@@ -132,6 +132,7 @@ class PseudoscienceClassifier(object):
         """ Classify Video """
         # Create Classifier Input
         classifier_input = [[X_video_snippet], [X_video_tags], [X_video_transcript], [X_video_comments]]
+        classifier_input = [np.reshape(data, (1, -1)) for data in classifier_input]
 
         # Perform Classification
         predicted_proba = self.PSEUDOSCIENCE_CLASSIFIER.predict(classifier_input, batch_size=1)
