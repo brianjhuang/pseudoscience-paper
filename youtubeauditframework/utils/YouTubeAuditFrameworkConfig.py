@@ -1,4 +1,5 @@
 #!/usr/bin/python
+import os
 
 class Config(object):
     """
@@ -27,7 +28,7 @@ class Config(object):
     """ YouTube Data API Config """
     YOUTUBE_API_SERVICE_NAME = "youtube"
     YOUTUBE_API_VERSION = "v3"
-    YOUTUBE_DATA_API_KEY = 'YOUR_YOUTUBE_DATA_API_KEY'
+    YOUTUBE_DATA_API_KEY = os.environ.get('YOUTUBE_DATA_API_KEY')
     # What Video Attributes to download
     DOWNLOAD_SNIPPET = True
     DOWNLOAD_VIDEO_TAGS = True

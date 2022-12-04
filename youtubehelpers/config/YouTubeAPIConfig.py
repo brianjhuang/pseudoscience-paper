@@ -1,4 +1,5 @@
 #!/usr/bin/python
+import os
 
 class Config(object):
     """
@@ -13,7 +14,7 @@ class Config(object):
     # YouTube Data API Config
     YOUTUBE_API_SERVICE_NAME = "youtube"
     YOUTUBE_API_VERSION = "v3"
-    YOUTUBE_DATA_API_KEY = 'YOUR_YOUTUBE_DATA_API_KEY'  # Used by default when an API Key is not provided to the YouTubeVideoDownloader class
+    YOUTUBE_DATA_API_KEY = os.environ.get('YOUTUBE_DATA_API_KEY')  # Used by default when an API Key is not provided to the YouTubeVideoDownloader class
 
     # Set the Number of Comments
     LIMIT_PAGES_COMMENTS = 1  # 200 Comments per page
@@ -24,9 +25,9 @@ class Config(object):
 
     # HTTPS Proxies for Video Transcript download
     HTTPS_PROXIES_LIST = [
-        'HOST:PORT',
-        'HOST:PORT',
-        'HOST:PORT',
-        'HOST:PORT',
-        'HOST:PORT',
+        # 'HOST:PORT',
+        # 'HOST:PORT',
+        # 'HOST:PORT',
+        # 'HOST:PORT',
+        # 'HOST:PORT',
     ]
