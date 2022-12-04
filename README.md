@@ -143,7 +143,7 @@ export YOUTUBE_DATA_API_KEY="YOUR_API_KEY"
 ```
 
 The following tutorials cover how to do this as well:
-https://www.youtube.com/watch?v=5iWhQWVXosU&t=1s (Mac)
+https://www.youtube.com/watch?v=5iWhQWVXosU&t=1s (Mac/Linux)
 https://www.youtube.com/watch?v=IolxqkL7cD8 (Windows)
 
 Now within Python you can access your API key by doing the following:
